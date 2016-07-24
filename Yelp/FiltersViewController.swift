@@ -3,7 +3,7 @@
 //  Yelp
 //
 //  Created by Binwei Yang on 7/23/16.
-//  Copyright © 2016 Timothy Lee. All rights reserved.
+//  Copyright © 2016 Binwei Yang. All rights reserved.
 //
 
 import UIKit
@@ -12,11 +12,25 @@ import UIKit
     optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject] )
 }
 
+struct FilterSetting {
+    var switchStates = [Int:Bool]()
+    var dealsOnly: Bool?
+}
+
+struct PickerSetting {
+    var isPickerActive = false
+    var pickedRow = 0
+}
+
 class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SwitchCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var switchStates = [Int:Bool]()
+    var filterSetting = FilterSetting()
+    
+    // idea from https://github.com/floriankrueger/iOS-Examples--UITableView-Combo-Box
+    var sortPickerSetting = PickerSetting()
+    var distancePickerSetting = PickerSetting()
     
     var delegate: FiltersViewControllerDelegate?
     
@@ -41,7 +55,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         var selectedCategories = [String]()
         
-        for (row, isSelected) in switchStates {
+        for (row, isSelected) in filterSetting.switchStates {
             if (isSelected) {
                 selectedCategories.append(categories[row]["code"]!)
             }
@@ -51,6 +65,12 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
             filters["categories"] = selectedCategories
         }
         
+        if (filterSetting.dealsOnly != nil) {
+            filters["dealsOnly"] = filterSetting.dealsOnly
+        }
+        
+        filters["sortBy"] = sortModes[sortPickerSetting.pickedRow].1.rawValue
+        
         delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
     
@@ -58,25 +78,148 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section
+        {
+        case 0:
+            return nil
+        case 1:
+            return "Distance"
+        case 2:
+            return "Sort By"
+        case 3:
+            return "Category"
+        default:
+            return nil
+        }
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 4
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            if (distancePickerSetting.isPickerActive) {
+                return distanceModes.count
+            }
+            else {
+                return 1
+            }
+        case 2:
+            if (sortPickerSetting.isPickerActive) {
+                return sortModes.count
+            }
+            else {
+                return 1
+            }
+        case 3:
+            return categories.count
+        default:
+            return 0
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            
+            cell.categoryLabel.text = "Offering a Deal"
+            cell.categorySwitch.on = filterSetting.dealsOnly ?? false
+            cell.delegate = self
+            
+            return cell
+        case 3:
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            
+            cell.categoryLabel.text = categories[indexPath.row]["name"]
+            cell.categorySwitch.on = filterSetting.switchStates[indexPath.row] ?? false
+            cell.delegate = self
+            
+            return cell
+        case 1:
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            
+            if (distancePickerSetting.isPickerActive) {
+                cell.categoryLabel.text = distanceModes[indexPath.row].0
+                cell.categorySwitch.on = indexPath.row == distancePickerSetting.pickedRow
+            }
+            else {
+                cell.categoryLabel.text = distanceModes[distancePickerSetting.pickedRow].0
+                cell.categorySwitch.on = true
+            }
+            
+            return cell
+        case 2:
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            
+            if (sortPickerSetting.isPickerActive) {
+                cell.categoryLabel.text = sortModes[indexPath.row].0
+                cell.categorySwitch.on = indexPath.row == sortPickerSetting.pickedRow
+            }
+            else {
+                cell.categoryLabel.text = sortModes[sortPickerSetting.pickedRow].0
+            }
+            
+            return cell
+            
+        default:
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            return cell
+        }
         
-        cell.categoryLabel.text = categories[indexPath.row]["name"]
-        cell.categorySwitch.on = switchStates[indexPath.row] ?? false
-        cell.delegate = self
-        
-        return cell
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if (indexPath.section == 1) {
+            if (distancePickerSetting.isPickerActive) {
+                distancePickerSetting.isPickerActive = false
+                distancePickerSetting.pickedRow = indexPath.row
+            }
+            else {
+                distancePickerSetting.isPickerActive = true
+            }
+            
+            tableView.reloadData()
+        }
+            
+        else if (indexPath.section == 2) {
+            if (sortPickerSetting.isPickerActive) {
+                sortPickerSetting.isPickerActive = false
+                sortPickerSetting.pickedRow = indexPath.row
+            }
+            else {
+                sortPickerSetting.isPickerActive = true
+            }
+            
+            tableView.reloadData()
+        }
+    }
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
-        
-        switchStates[indexPath.row] = value
+        switch indexPath.section {
+        case 0:
+            filterSetting.dealsOnly = value
+            break
+        case 2:
+            filterSetting.switchStates[indexPath.row] = value
+            break
+        default:
+            break
+        }
     }
+    
+    private let sortModes = [("Best Match", YelpSortMode.BestMatched),
+                             ("Distance", YelpSortMode.Distance),
+                             ("Highest Rated", YelpSortMode.HighestRated)]
+    
+    private let distanceModes = [("Auto", 0), ("0.3 miles", 0.3), ("1 mile", 1),
+                                 ("5 miles", 5), ("20 miles", 20)]
     
     private let categories = [["name" : "Afghan", "code": "afghani"],
                               ["name" : "African", "code": "african"],

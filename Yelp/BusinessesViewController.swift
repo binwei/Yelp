@@ -2,8 +2,8 @@
 //  BusinessesViewController.swift
 //  Yelp
 //
-//  Created by Timothy Lee on 4/23/15.
-//  Copyright (c) 2015 Timothy Lee. All rights reserved.
+//  Created by Binwei Yang on 4/23/15.
+//  Copyright (c) 2015 Binwei Yang. All rights reserved.
 //
 
 import UIKit
@@ -78,8 +78,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         
         let categories = filters["categories"] as? [String]
+        let dealsOnly = filters["dealsOnly"] as? Bool
+        let sortBy = filters["sortBy"] as? Int
         
-        Business.searchWithTerm("Restaraunts", sort: nil, categories: categories, deals: nil, completion: {(businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaraunts", sort: YelpSortMode(rawValue: sortBy!), categories: categories, deals: dealsOnly, completion: {(businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         })

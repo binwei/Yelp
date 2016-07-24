@@ -153,7 +153,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="72" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="75Q-Zh-h7O">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchCell" rowHeight="72" id="m70-EM-fsC" customClass="SwitchCell" customModule="Yelp" customModuleProvider="target">
@@ -196,6 +196,7 @@
                             <constraint firstItem="75Q-Zh-h7O" firstAttribute="top" secondItem="iVA-a1-gvI" secondAttribute="top" id="fUS-oi-3aE"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Filters" id="Pbe-YV-A8w">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="bOy-LD-QZV">
                             <connections>
@@ -208,13 +209,14 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="75Q-Zh-h7O" id="9BH-fE-apE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="brC-lg-HA1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2061" y="338"/>
+            <point key="canvasLocation" x="1865" y="350"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3cN-w6-3Hj">
@@ -250,7 +252,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="79p-zq-hHB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1653" y="338"/>
+            <point key="canvasLocation" x="1612" y="1080"/>
         </scene>
     </scenes>
 </document>
