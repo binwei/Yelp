@@ -31,6 +31,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     // idea from https://github.com/floriankrueger/iOS-Examples--UITableView-Combo-Box
     var sortPickerSetting = PickerSetting()
     var distancePickerSetting = PickerSetting()
+    let sectionTitles: [String?] = [nil, "Distance", "Sort By", "Category"]
     
     var delegate: FiltersViewControllerDelegate?
     
@@ -40,6 +41,10 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
         tableView.dataSource = self
         tableView.delegate = self
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 120
+        
         tableView.reloadData()
     }
     
@@ -79,23 +84,11 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section
-        {
-        case 0:
-            return nil
-        case 1:
-            return "Distance"
-        case 2:
-            return "Sort By"
-        case 3:
-            return "Category"
-        default:
-            return nil
-        }
+        return sectionTitles[section]
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return sectionTitles.count
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -103,19 +96,9 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         case 0:
             return 1
         case 1:
-            if (distancePickerSetting.isPickerActive) {
-                return distanceModes.count
-            }
-            else {
-                return 1
-            }
+            return distancePickerSetting.isPickerActive ? distanceModes.count : 1
         case 2:
-            if (sortPickerSetting.isPickerActive) {
-                return sortModes.count
-            }
-            else {
-                return 1
-            }
+            return sortPickerSetting.isPickerActive ? sortModes.count : 1
         case 3:
             return categories.count
         default:
@@ -133,7 +116,14 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.delegate = self
             
             return cell
-        case 3:
+            
+        case 1:
+            return getOptionPickerCell(tableView, indexPath: indexPath, pickerSetting: distancePickerSetting, options: distanceModes)
+            
+        case 2:
+            return getOptionPickerCell(tableView, indexPath: indexPath, pickerSetting: sortPickerSetting, options: sortModes)
+            
+        default:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
             
             cell.categoryLabel.text = categories[indexPath.row]["name"]
@@ -141,74 +131,56 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.delegate = self
             
             return cell
-        case 1:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            
-            if (distancePickerSetting.isPickerActive) {
-                cell.categoryLabel.text = distanceModes[indexPath.row].0
-                cell.categorySwitch.on = indexPath.row == distancePickerSetting.pickedRow
+        }
+    }
+    
+    func getOptionPickerCell<T>(tableView: UITableView, indexPath: NSIndexPath, pickerSetting: PickerSetting, options: [(String, T)]) -> OptionPickerCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("OptionPickerCell", forIndexPath: indexPath) as! OptionPickerCell
+        
+        if (pickerSetting.isPickerActive) {
+            cell.optionValueLabel.text = options[indexPath.row].0
+            if (indexPath.row == pickerSetting.pickedRow) {
+                cell.selectionMode = .LastSelection
             }
             else {
-                cell.categoryLabel.text = distanceModes[distancePickerSetting.pickedRow].0
-                cell.categorySwitch.on = true
+                cell.selectionMode = .NotSelected
             }
-            
-            return cell
-        case 2:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            
-            if (sortPickerSetting.isPickerActive) {
-                cell.categoryLabel.text = sortModes[indexPath.row].0
-                cell.categorySwitch.on = indexPath.row == sortPickerSetting.pickedRow
-            }
-            else {
-                cell.categoryLabel.text = sortModes[sortPickerSetting.pickedRow].0
-            }
-            
-            return cell
-            
-        default:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            return cell
+        }
+        else {
+            cell.optionValueLabel.text = options[pickerSetting.pickedRow].0
+            cell.selectionMode = .CurrentSelection
         }
         
+        return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        if (indexPath.section == 1) {
-            if (distancePickerSetting.isPickerActive) {
-                distancePickerSetting.isPickerActive = false
-                distancePickerSetting.pickedRow = indexPath.row
-            }
-            else {
-                distancePickerSetting.isPickerActive = true
-            }
-            
-            tableView.reloadData()
-        }
-            
-        else if (indexPath.section == 2) {
-            if (sortPickerSetting.isPickerActive) {
-                sortPickerSetting.isPickerActive = false
-                sortPickerSetting.pickedRow = indexPath.row
-            }
-            else {
-                sortPickerSetting.isPickerActive = true
-            }
-            
-            tableView.reloadData()
+        switch indexPath.section {
+        case 1:
+            togglePickerSetting(&distancePickerSetting, indexPath)
+        case 2:
+            togglePickerSetting(&sortPickerSetting, indexPath)
+        default:
+            break
         }
     }
+    
+    func togglePickerSetting(inout pickerSetting: PickerSetting, _ indexPath: NSIndexPath) {
+        if (pickerSetting.isPickerActive) {
+            pickerSetting.pickedRow = indexPath.row
+        }
+        pickerSetting.isPickerActive = !pickerSetting.isPickerActive
+        
+        tableView.reloadData()
+    }
+    
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
         switch indexPath.section {
         case 0:
             filterSetting.dealsOnly = value
-            break
-        case 2:
+        case 3:
             filterSetting.switchStates[indexPath.row] = value
-            break
         default:
             break
         }

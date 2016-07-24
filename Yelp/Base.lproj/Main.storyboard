@@ -163,26 +163,61 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="71.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKA-Rl-K5u">
-                                                    <rect key="frame" x="8" y="25" width="42" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKA-Rl-K5u">
+                                                    <rect key="frame" x="8" y="8" width="42" height="55.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9sk-CT-uBj">
-                                                    <rect key="frame" x="263" y="20" width="51" height="31"/>
+                                                    <rect key="frame" x="263" y="20.5" width="51" height="31"/>
                                                 </switch>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="jKA-Rl-K5u" firstAttribute="centerY" secondItem="7wn-kP-8gX" secondAttribute="centerY" id="Bgf-nP-vH1"/>
+                                                <constraint firstAttribute="bottom" secondItem="jKA-Rl-K5u" secondAttribute="bottom" constant="8" id="KhD-zq-qGB"/>
+                                                <constraint firstItem="9sk-CT-uBj" firstAttribute="centerY" secondItem="jKA-Rl-K5u" secondAttribute="centerY" id="U3w-Xb-lOz"/>
                                                 <constraint firstItem="jKA-Rl-K5u" firstAttribute="leading" secondItem="7wn-kP-8gX" secondAttribute="leading" constant="8" id="dwy-VA-klZ"/>
-                                                <constraint firstItem="9sk-CT-uBj" firstAttribute="centerY" secondItem="7wn-kP-8gX" secondAttribute="centerY" id="p46-o3-c77"/>
+                                                <constraint firstItem="jKA-Rl-K5u" firstAttribute="top" secondItem="7wn-kP-8gX" secondAttribute="top" constant="8" id="eUH-Dn-VfC"/>
                                                 <constraint firstAttribute="trailing" secondItem="9sk-CT-uBj" secondAttribute="trailing" constant="8" id="wWm-D6-pbP"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="categoryLabel" destination="jKA-Rl-K5u" id="arJ-g2-ayR"/>
                                             <outlet property="categorySwitch" destination="9sk-CT-uBj" id="tMl-PD-nvq"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="OptionPickerCell" id="1hR-tX-vp6" customClass="OptionPickerCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="164" width="320" height="72"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1hR-tX-vp6" id="IFz-zp-xgl">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="71.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Jxn-7f-qIp">
+                                                    <rect key="frame" x="282" y="21" width="30" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="30" id="OQH-l1-oCI"/>
+                                                        <constraint firstAttribute="height" constant="30" id="mLw-ih-zIW"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Option" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sg6-KW-hr7">
+                                                    <rect key="frame" x="8" y="8" width="56" height="55.5"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Jxn-7f-qIp" firstAttribute="centerY" secondItem="sg6-KW-hr7" secondAttribute="centerY" id="NR1-cU-a3O"/>
+                                                <constraint firstItem="sg6-KW-hr7" firstAttribute="leading" secondItem="IFz-zp-xgl" secondAttribute="leading" constant="8" id="P7E-0S-HVf"/>
+                                                <constraint firstAttribute="trailing" secondItem="Jxn-7f-qIp" secondAttribute="trailing" constant="8" id="VOH-PM-rkK"/>
+                                                <constraint firstAttribute="bottom" secondItem="sg6-KW-hr7" secondAttribute="bottom" constant="8" id="cz5-TK-281"/>
+                                                <constraint firstItem="sg6-KW-hr7" firstAttribute="top" secondItem="IFz-zp-xgl" secondAttribute="top" constant="8" id="jbA-zW-48n"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="optionSelectionImage" destination="Jxn-7f-qIp" id="wOK-9s-jw0"/>
+                                            <outlet property="optionValueLabel" destination="sg6-KW-hr7" id="CNC-iI-zoN"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
