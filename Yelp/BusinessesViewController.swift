@@ -77,9 +77,14 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         let navigationController = segue.destinationViewController as! UINavigationController
-        let filtersViewController = navigationController.topViewController as! FiltersViewController
-        
-        filtersViewController.delegate = self
+        if ("filtersSegue" == segue.identifier) {
+            let filtersViewController = navigationController.topViewController as! FiltersViewController
+            filtersViewController.delegate = self
+        }
+        else if ("mapSegue" == segue.identifier) {
+            let mapViewController = navigationController.topViewController as! MapViewController
+            mapViewController.businesses = self.businesses
+        }
     }
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
@@ -92,6 +97,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         Business.searchWithTerm("Restaraunts", sort: YelpSortMode(rawValue: sortBy!), categories: categories, deals: dealsOnly, distanceInMile: distanceInMile, completion: {(businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
+
+            self.searchBar.text = ""
             self.allBusinesses = businesses
         })
     }
