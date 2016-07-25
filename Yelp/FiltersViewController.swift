@@ -138,7 +138,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 return cell
             } else {
-                return tableView.dequeueReusableCellWithIdentifier("SeeAllCell", forIndexPath: indexPath) as! SeeAllCell
+                return tableView.dequeueReusableCellWithIdentifier("SeeAllCell", forIndexPath: indexPath)
             }
         }
     }

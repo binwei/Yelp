@@ -220,7 +220,7 @@
                                             <outlet property="optionValueLabel" destination="sg6-KW-hr7" id="CNC-iI-zoN"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SeeAllCell" id="jGW-Sm-GB7" customClass="SeeAllCell" customModule="Yelp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SeeAllCell" id="jGW-Sm-GB7">
                                         <rect key="frame" x="0.0" y="236" width="320" height="72"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jGW-Sm-GB7" id="yJV-Hy-t3P">
