@@ -15,6 +15,8 @@ import UIKit
 struct FilterSetting {
     var switchStates = [Int:Bool]()
     var dealsOnly: Bool?
+    var showAllCategories = false
+    let numInitialCategories = 9
 }
 
 struct PickerSetting {
@@ -102,7 +104,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         case 2:
             return sortPickerSetting.isPickerActive ? sortModes.count : 1
         case 3:
-            return categories.count
+            return filterSetting.showAllCategories ? categories.count : filterSetting.numInitialCategories
         default:
             return 0
         }
@@ -126,13 +128,18 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
             return getOptionPickerCell(tableView, indexPath: indexPath, pickerSetting: sortPickerSetting, options: sortModes)
             
         default:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            
-            cell.categoryLabel.text = categories[indexPath.row]["name"]
-            cell.categorySwitch.on = filterSetting.switchStates[indexPath.row] ?? false
-            cell.delegate = self
-            
-            return cell
+            if (filterSetting.showAllCategories || indexPath.row < filterSetting.numInitialCategories - 1) {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+                
+                cell.categoryLabel.text = categories[indexPath.row]["name"]
+                cell.categorySwitch.on = filterSetting.switchStates[indexPath.row] ?? false
+                cell.delegate = self
+                
+                return cell
+            } else {
+                return tableView.dequeueReusableCellWithIdentifier("SeeAllCell", forIndexPath: indexPath) as! SeeAllCell
+            }
         }
     }
     
@@ -162,6 +169,11 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
             togglePickerSetting(&distancePickerSetting, indexPath)
         case 2:
             togglePickerSetting(&sortPickerSetting, indexPath)
+        case 3:
+            if (!filterSetting.showAllCategories && indexPath.row == filterSetting.numInitialCategories - 1) {
+                filterSetting.showAllCategories = true
+                tableView.reloadData()
+            }
         default:
             break
         }
@@ -193,7 +205,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
                              ("Highest Rated", YelpSortMode.HighestRated)]
     
     private let distanceModes: [(String, Double?)] = [("Auto", nil), ("0.3 miles", 0.3), ("1 mile", 1),
-                                 ("5 miles", 5), ("20 miles", 20)]
+                                                      ("5 miles", 5), ("20 miles", 20)]
     
     private let categories = [["name" : "Afghan", "code": "afghani"],
                               ["name" : "African", "code": "african"],

@@ -11,8 +11,11 @@ import UIKit
 class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
     
     var businesses: [Business]!
+    var allBusinesses: [Business]!
     
     @IBOutlet weak var tableView: UITableView!
+    
+    var searchBar: UISearchBar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +28,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
+            self.allBusinesses = businesses
         })
         
         /* Example of Yelp search with more search options specified
@@ -37,6 +41,14 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
          }
          }
          */
+        
+        // Initialize the UISearchBar
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+        
+        // Add SearchBar to the NavigationBar
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
     }
     
     override func didReceiveMemoryWarning() {
@@ -80,7 +92,41 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         Business.searchWithTerm("Restaraunts", sort: YelpSortMode(rawValue: sortBy!), categories: categories, deals: dealsOnly, distanceInMile: distanceInMile, completion: {(businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
+            self.allBusinesses = businesses
         })
     }
     
+    func doSearch() {
+        let searchText = searchBar.text!
+        businesses = allBusinesses.filter({ (business) -> Bool in
+            return nil != business.name!.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch)
+        })
+        
+        tableView.reloadData()
+    }
+}
+
+// search bar methods
+extension BusinessesViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true;
+    }
+    
+    func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(false, animated: true)
+        return true;
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = ""
+        businesses = allBusinesses
+        tableView.reloadData()
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        doSearch()
+    }
 }
