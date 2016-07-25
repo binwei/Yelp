@@ -76,6 +76,8 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         filters["sortBy"] = sortModes[sortPickerSetting.pickedRow].1.rawValue
         
+        filters["distanceInMile"] = distanceModes[distancePickerSetting.pickedRow].1
+        
         delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
     
@@ -190,7 +192,7 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
                              ("Distance", YelpSortMode.Distance),
                              ("Highest Rated", YelpSortMode.HighestRated)]
     
-    private let distanceModes = [("Auto", 0), ("0.3 miles", 0.3), ("1 mile", 1),
+    private let distanceModes: [(String, Double?)] = [("Auto", nil), ("0.3 miles", 0.3), ("1 mile", 1),
                                  ("5 miles", 5), ("20 miles", 20)]
     
     private let categories = [["name" : "Afghan", "code": "afghani"],

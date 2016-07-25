@@ -25,11 +25,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
-            
-            for business in businesses {
-                print(business.name!)
-                print(business.address!)
-            }
         })
         
         /* Example of Yelp search with more search options specified
@@ -80,8 +75,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let categories = filters["categories"] as? [String]
         let dealsOnly = filters["dealsOnly"] as? Bool
         let sortBy = filters["sortBy"] as? Int
+        let distanceInMile = filters["distanceInMile"] as? Double
         
-        Business.searchWithTerm("Restaraunts", sort: YelpSortMode(rawValue: sortBy!), categories: categories, deals: dealsOnly, completion: {(businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaraunts", sort: YelpSortMode(rawValue: sortBy!), categories: categories, deals: dealsOnly, distanceInMile: distanceInMile, completion: {(businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         })
